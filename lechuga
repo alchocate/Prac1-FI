@@ -1,8 +1,0 @@
-#!/bin/bash
-
-awk -F',' '{ if (NF == 16) print $0 }' CAvideos.csv > supervivent
-
-man cut
-
-
-
