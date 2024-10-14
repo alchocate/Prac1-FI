@@ -78,3 +78,16 @@ do
 done < views.csv > ranking.csv
 
 head ranking.csv
+
+
+read video
+if cut -d',' -f1 ranking.csv | grep "^$video"; then
+awk -F',' '{print($0)}' ranking.csv
+else
+    echo "/"
+fi
+if cut -d',' -f3 ranking.csv | grep "^$video"; then
+awk -F',' '{print($3, $6, $8, $9, $10, $15, $16, $16, $17)}' ranking.csv
+else
+    echo " / "
+fi
