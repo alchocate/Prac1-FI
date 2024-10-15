@@ -34,38 +34,6 @@ awk -F',' '
 ' nou.csv > views.csv
 
 
-
-
-
-#awk -F',' '
-#    NR==1 {print $0", Rlikes, Rdislikes"
-#		next
-#	}
-#{
-#Rlikes=0;
-#Rdislikes=0;
-#for (i = 1; i <= NF; i++){
-#		if(i == 8){
-#			views =$i;
-#		} else if (i == 9){
-#			likes =$i
-#		} else if (i == 10){
-#			dislikes=$i
-#		}
-#if (views != 0){
-#	Rlikes = (100/views)*likes;
-#	Rdislikes = (100/views)*dislikes;
-#} else{
-#	Rlikes = "/"
-#	Rdislikes = "/"
-#}
-#}
-
-#}' OFS=',' views.csv > ranking.csv
-
-
-
-#
 l1=true
 while IFS=, read -r c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11 c12 c13 c14 c15
 do
@@ -77,17 +45,22 @@ do
    echo $c1","$c2","$c3","$c4","$c5","$c6","$c7","$c8","$c9","$c10","$c11","$c12","$c13","$c14","$c15",$((c9 * 100 / c8)),$((c10 * 100 / c8))"
 done < views.csv > ranking.csv
 
-head ranking.csv
-
 
 read video
-if cut -d',' -f1 ranking.csv | grep "^$video"; then
-awk -F',' '{print($0)}' ranking.csv
-else
-    echo "/"
+
+# Busquem si la primera columna es igual a l'entrada
+resultat=$(grep "^$video," ranking.csv)
+
+# Si no coincideixen busquem a la tercera
+if [ -z "$resultat" ]; then
+    resultat=$(grep ",$video," ranking.csv)
 fi
-if cut -d',' -f3 ranking.csv | grep "^$video"; then
-awk -F',' '{print($3, $6, $8, $9, $10, $15, $16, $16, $17)}' ranking.csv
+
+# Si s'ha trobat coincidència imprimim el resultat
+if [ -n "$resultat" ]; then
+    # Amb la comanda cut mostrem únicament les columnes que necessitem
+    echo "$resultat" | cut -d',' -f3,6,8,9,10,15,16,17
 else
-    echo " / "
+    # En cas de que no trobem cap coincidència mostrem aquest missatge
+        echo "No s'han trobat coincidencies"
 fi
