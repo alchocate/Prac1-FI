@@ -45,22 +45,26 @@ do
    echo $c1","$c2","$c3","$c4","$c5","$c6","$c7","$c8","$c9","$c10","$c11","$c12","$c13","$c14","$c15",$((c9 * 100 / c8)),$((c10 * 100 / c8))"
 done < views.csv > ranking.csv
 
-
+# Lleguim la entrada de video i si es un "intro" mostra l'arxiu que conté de l'exercici 1 al 4
 read video
+if [ -z "$video" ]; then
+cat ranking.csv
+else
 
-# Busquem si la primera columna es igual a l'entrada
-resultat=$(grep "^$video," ranking.csv)
+# Busquem si la primera columna conté el text de l'entrada
+resultat=$(grep -i "^$video" ranking.csv)
 
-# Si no coincideixen busquem a la tercera
+# Si no coincideixen busquem a la tercera columna
 if [ -z "$resultat" ]; then
-    resultat=$(grep ",$video," ranking.csv)
+    resultat=$(grep -i "$video" ranking.csv)
 fi
 
-# Si s'ha trobat coincidència imprimim el resultat
+# Si hem trobat alguna coincidència imprimim el resultat
 if [ -n "$resultat" ]; then
     # Amb la comanda cut mostrem únicament les columnes que necessitem
     echo "$resultat" | cut -d',' -f3,6,8,9,10,15,16,17
 else
     # En cas de que no trobem cap coincidència mostrem aquest missatge
-        echo "No s'han trobat coincidencies"
+    echo "No s'han trobat coincidències"
+fi
 fi
